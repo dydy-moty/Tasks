@@ -1,0 +1,41 @@
+#wrapper{
+	
+	width: 500px;
+	margin: 0px auto;
+	padding: 10px;
+	
+	text-align: justify;
+}
+#wrapper > div{
+	margin-bottom: 15px;
+}
+#wrapper p{
+	margin-bottom: 5px;
+}
+
+#myModal {
+    display: none;	
+}
+
+#myModal.activeClass { 
+	display: block;
+}
+.date{
+	font-weight: bold;
+}
+.name{
+	font-size: 12pt;
+}
+
+.active {
+background-color: blue;
+}
+
+textarea.form-control{
+	width: 100%;
+	padding: 5px 10px;
+	min-height: 200px;
+	resize: vertical;
+	text-align: justify;
+	
+}
