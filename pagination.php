@@ -1,5 +1,3 @@
-
-				
 <?php
 	error_reporting(E_ALL);
     ini_set('display_errors','on');
@@ -10,27 +8,37 @@
 	$host = 'localhost'; 
 	$user = 'root'; 
 	$password = 'root'; 
-	$db_name = 'test'; 
+	$db_name = 'test';
 
-	$link = mysqli_connect($host, $user, $password, $db_name);
-	mysqli_query($link, "SET NAMES 'utf8'");
-		
-		
+
+    try {
+        #  PDO_MYSQL
+        $DBH = new PDO("mysql:host=$host;dbname=$db_name", $user, $password);
+        $DBH->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+
+        #аналог mysqli_query($link, "SET NAMES 'utf8'");
+        array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+    }
+    catch(PDOException $e) {
+
+        echo $e->getMessage();
+    }
+
 	//pagination
 	
 	$notesOnPage = 3;
 	
-	if(isset($_GET['page'])) {
-    $page = $_GET['page'];
+	if(isset($_REQUEST['page'])) {
+    $page = $_REQUEST['page'];
     } else {
     $page = 1;
     }
 		
 	$from = ($page - 1) * $notesOnPage;
-		
-	$query = "SELECT COUNT(*) as count FROM book";
-	$result = mysqli_query($link, $query) or die(mysqli_error($link));
-	$count = mysqli_fetch_assoc($result)['count'];
+
+    $STM = $DBH->prepare("SELECT COUNT(*) as count FROM book");
+    $STM->execute();
+    $count = $STM->fetch(PDO::FETCH_ASSOC)['count'];
 	$pagesCount = ceil($count/$notesOnPage);
 ?>
  <div>
@@ -84,16 +92,17 @@
 	$name = $_POST['name'];
 	$comment = $_POST['comment'];
 	$date = date('Y-m-d H:i:s');
-					
-	$query = "INSERT INTO book SET name='$name', date='$date', comment='$comment'";
-	mysqli_query($link, $query) or die(mysqli_error($link));
+
+    $STM = $DBH->prepare("INSERT INTO book SET name='$name', date='$date', comment='$comment'");
+    $STM->execute();
+
 	}
 
     //show comments according to the variable $notesOnPage:
-    $query = "SELECT * FROM book LIMIT $from, $notesOnPage";
-	$result = mysqli_query($link, $query) or die(mysqli_error($link));
-	for ($data = []; $row = mysqli_fetch_assoc($result); $data[] = $row);
-		
+    $STM = $DBH->prepare("SELECT * FROM book LIMIT $from, $notesOnPage");
+    $STM->execute();
+    $data = $STM->fetchAll(PDO::FETCH_ASSOC);
+
 	$str = '';
     foreach($data as $elem) {
 	$dateFromDB = strtotime($elem['date']);
