@@ -99,13 +99,14 @@
 	}
 
     //show comments according to the variable $notesOnPage:
-    $STM = $DBH->prepare("SELECT * FROM book LIMIT $from, $notesOnPage");
+    $STM = $DBH->prepare("SELECT * FROM book ORDER BY date DESC LIMIT $from, $notesOnPage");
     $STM->execute();
     $data = $STM->fetchAll(PDO::FETCH_ASSOC);
 
 	$str = '';
+
     foreach($data as $elem) {
-	$dateFromDB = strtotime($elem['date']);
+    $dateFromDB = strtotime($elem['date']);
 				
 	$str .= "<div class='note'><p>";
 	$str .= "<b><span class='date'>".date('d.m.Y H:i:s',$dateFromDB)."</span></b>  ";
