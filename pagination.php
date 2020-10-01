@@ -26,7 +26,7 @@
 
 	//pagination
 	
-	$notesOnPage = 3;
+	$notesOnPage = 5;
 	
 	if(isset($_REQUEST['page'])) {
     $page = $_REQUEST['page'];
